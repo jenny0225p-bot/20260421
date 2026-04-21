@@ -24,13 +24,16 @@ function setup() {
   // 隱藏預設的影片元件，只在畫布上繪製
   capture.hide();
 
-  // 建立擷取按鈕
+  // 建立擷取按鈕，並增加適合手機觸控的大小與樣式
   saveBtn = createButton('擷取目前畫面');
-  // 將按鈕放在畫面底部中央稍微偏上的位置（視訊畫面 60% 之外）
-  saveBtn.position(windowWidth / 2 - 50, windowHeight - 60);
-  saveBtn.style('padding', '10px 20px');
+  saveBtn.style('padding', '15px 30px'); // 增大點擊區域
+  saveBtn.style('font-size', '18px');     // 增大文字
   saveBtn.style('background-color', '#fff');
-  saveBtn.style('border-radius', '10px');
+  saveBtn.style('border-radius', '12px');
+  saveBtn.style('border', 'none');
+  saveBtn.style('box-shadow', '0 4px 10px rgba(0,0,0,0.3)'); // 增加陰影方便辨識
+  saveBtn.style('width', '180px');        // 固定寬度以利計算位置
+  saveBtn.position(windowWidth / 2 - 90, windowHeight - 80);
   saveBtn.mousePressed(takeSnapshot);
   
   // 先給予一個暫時的寬高，避免在攝影機啟動前 pg 物件無效
@@ -92,7 +95,7 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   // 視窗縮放時重新調整按鈕位置
-  saveBtn.position(windowWidth / 2 - 50, windowHeight - 60);
+  saveBtn.position(windowWidth / 2 - 90, windowHeight - 80);
 }
 
 // 3. 關鍵：手機瀏覽器政策規定視訊播放通常需要使用者的第一下點擊
