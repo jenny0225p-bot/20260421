@@ -1,5 +1,6 @@
 let capture;
 let pg;
+let bubbles = [];
 
 function setup() {
   // 產生一個全螢幕的畫布
@@ -21,13 +22,32 @@ function draw() {
     pg = createGraphics(capture.width, capture.height);
   }
 
-  // 在 graphics 層上繪製內容 (例如：黃色文字提示)
+  // 在 graphics 層上繪製冒泡泡效果
   pg.clear(); // 清除上一幀內容，保持透明背景
-  pg.fill(255, 255, 0);
-  pg.noStroke();
-  pg.textAlign(CENTER, CENTER);
-  pg.textSize(pg.width * 0.08);
-  pg.text("GRAPHICS OVERLAY", pg.width / 2, pg.height / 2);
+
+  // 每隔幾幀產生一個新泡泡
+  if (frameCount % 5 === 0 && capture.width > 0) {
+    bubbles.push({
+      x: random(pg.width),
+      y: pg.height + 20,
+      size: random(10, 30),
+      speed: random(1, 4)
+    });
+  }
+
+  pg.noFill();
+  pg.stroke(255, 200); // 半透明白色
+  pg.strokeWeight(1.5);
+
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    let b = bubbles[i];
+    b.y -= b.speed; // 向上移動
+    b.x += sin(frameCount * 0.1 + i) * 0.5; // 輕微左右晃動
+    pg.circle(b.x, b.y, b.size);
+    
+    // 移除超出畫面的泡泡以維持效能
+    if (b.y < -50) bubbles.splice(i, 1);
+  }
 
   // 計算影像寬高為整個畫布寬高的 60%
   let vW = width * 0.6;
