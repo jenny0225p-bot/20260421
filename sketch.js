@@ -1,6 +1,7 @@
 let capture;
 let pg;
 let bubbles = [];
+let saveBtn;
 
 function setup() {
   // 產生一個全螢幕的畫布
@@ -22,6 +23,15 @@ function setup() {
   
   // 隱藏預設的影片元件，只在畫布上繪製
   capture.hide();
+
+  // 建立擷取按鈕
+  saveBtn = createButton('擷取目前畫面');
+  // 將按鈕放在畫面底部中央稍微偏上的位置（視訊畫面 60% 之外）
+  saveBtn.position(windowWidth / 2 - 50, windowHeight - 60);
+  saveBtn.style('padding', '10px 20px');
+  saveBtn.style('background-color', '#fff');
+  saveBtn.style('border-radius', '10px');
+  saveBtn.mousePressed(takeSnapshot);
   
   // 先給予一個暫時的寬高，避免在攝影機啟動前 pg 物件無效
   pg = createGraphics(windowWidth, windowHeight); 
@@ -81,6 +91,8 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  // 視窗縮放時重新調整按鈕位置
+  saveBtn.position(windowWidth / 2 - 50, windowHeight - 60);
 }
 
 // 3. 關鍵：手機瀏覽器政策規定視訊播放通常需要使用者的第一下點擊
@@ -90,4 +102,16 @@ function mousePressed() {
     capture.play();
     // 此舉能確保在使用者點擊後，視訊流被瀏覽器正式允許播放
   }
+}
+
+// 擷取畫面並儲存的函式
+function takeSnapshot() {
+  let vW = width * 0.6;
+  let vH = height * 0.6;
+  let x = (width - vW) / 2;
+  let y = (height - vH) / 2;
+  
+  // 從畫布中擷取視訊所在範圍的影像
+  let shot = get(x, y, vW, vH);
+  save(shot, 'snapshot.jpg');
 }
