@@ -5,12 +5,21 @@ let bubbles = [];
 function setup() {
   // 產生一個全螢幕的畫布
   createCanvas(windowWidth, windowHeight);
-  // 擷取攝影機影像
-  capture = createCapture(VIDEO);
+
+  // 1. 指定使用前置鏡頭 (facingMode: user) 並關閉音訊
+  let constraints = {
+    video: {
+      facingMode: "user"
+    },
+    audio: false
+  };
+  capture = createCapture(constraints);
+  
+  // 2. 關鍵：修正手機瀏覽器（特別是 iOS Safari）不顯示視訊的問題
+  capture.elt.setAttribute('playsinline', '');
   // 隱藏預設的影片元件，只在畫布上繪製
   capture.hide();
-  // 先初始化一個預設大小的繪圖層
-  pg = createGraphics(windowWidth, windowHeight);
+  pg = createGraphics(1, 1); 
 }
 
 function draw() {
