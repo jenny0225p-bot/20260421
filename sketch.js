@@ -89,27 +89,31 @@ function draw() {
   scale(-1, 1);
   imageMode(CENTER);
   
-  // 4. 處理並繪製黑白馬賽克影像
-  let blockSize = 20;
+  // 4. 處理並繪製黑白馬賽克影像 (調小 blockSize 使方塊變多、變細)
+  let blockSize = 8;
   noStroke();
-  for (let y = 0; y < capture.height; y += blockSize) {
-    for (let x = 0; x < capture.width; x += blockSize) {
-      // 取得單位起點的 RGB 值 (跳過透明度 A)
-      let i = (y * capture.width + x) * 4;
-      let r = capture.pixels[i];
-      let g = capture.pixels[i + 1];
-      let b = capture.pixels[i + 2];
-      
-      // 計算平均值以取得黑白數值 (R+G+B)/3
-      let gray = (r + g + b) / 3;
-      fill(gray);
-      
-      // 將攝影機原始座標映射至畫布上的顯示位置 (-vW/2 到 vW/2 是因為中心對齊)
-      let dx = map(x, 0, capture.width, -vW / 2, vW / 2);
-      let dy = map(y, 0, capture.height, -vH / 2, vH / 2);
-      let dw = blockSize * (vW / capture.width);
-      let dh = blockSize * (vH / capture.height);
-      rect(dx, dy, dw, dh);
+  if (capture.pixels.length > 0) {
+    for (let y = 0; y < capture.height; y += blockSize) {
+      for (let x = 0; x < capture.width; x += blockSize) {
+        // 取得單位起點的 RGB 值
+        let i = (y * capture.width + x) * 4;
+        let r = capture.pixels[i];
+        let g = capture.pixels[i + 1];
+        let b = capture.pixels[i + 2];
+        
+        // 計算平均值以取得黑白亮度
+        let gray = (r + g + b) / 3;
+        fill(gray);
+        
+        // 將座標映射至顯示區域
+        let dx = map(x, 0, capture.width, -vW / 2, vW / 2);
+        let dy = map(y, 0, capture.height, -vH / 2, vH / 2);
+        let dw = blockSize * (vW / capture.width);
+        let dh = blockSize * (vH / capture.height);
+        
+        // 繪製小方塊，+1 是為了避免方塊間出現背景色的縫隙
+        rect(dx, dy, dw + 1, dh + 1);
+      }
     }
   }
 
