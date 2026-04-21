@@ -114,7 +114,17 @@ function takeSnapshot() {
   let x = (width - vW) / 2;
   let y = (height - vH) / 2;
   
-  // 從畫布中擷取視訊所在範圍的影像
+  // 1. 取得畫布指定區域的影像
   let shot = get(x, y, vW, vH);
-  save(shot, 'snapshot.jpg');
+  
+  // 2. 為了在 GitHub/手機環境更穩定，我們手動建立一個下載連結
+  let canvasTemp = shot.canvas;
+  canvasTemp.toBlob((blob) => {
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'snapshot.jpg';
+    a.click(); // 模擬點擊產生下載
+    setTimeout(() => URL.revokeObjectURL(url), 1000); // 釋放記憶體
+  }, 'image/jpeg', 0.9);
 }
