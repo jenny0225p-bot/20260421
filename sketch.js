@@ -16,10 +16,16 @@ function setup() {
   capture = createCapture(constraints);
   
   // 2. 關鍵：修正手機瀏覽器（特別是 iOS Safari）不顯示視訊的問題
+  // playsinline 讓影片在網頁內播放，muted 則能繞過多數瀏覽器的自動播放阻擋
   capture.elt.setAttribute('playsinline', '');
+  capture.elt.setAttribute('muted', '');
+  
   // 隱藏預設的影片元件，只在畫布上繪製
   capture.hide();
-  pg = createGraphics(1, 1); 
+  
+  // 先給予一個暫時的寬高，避免在攝影機啟動前 pg 物件無效
+  pg = createGraphics(windowWidth, windowHeight); 
+  capture.play(); // 嘗試在啟動時直接呼叫播放
 }
 
 function draw() {
@@ -33,6 +39,11 @@ function draw() {
   // 2. 當攝影機成功取得尺寸後，同步調整 pg 的解析度（確保與視訊同比例）
   if (capture.width > 0 && (pg.width !== capture.width || pg.height !== capture.height)) {
     pg = createGraphics(capture.width, capture.height);
+  }
+
+  // 如果攝影機尚未讀取到有效影像資料，則跳過繪製，避免畫面出現錯誤或黑屏
+  if (capture.width < 10) {
+    return;
   }
 
   // 在 graphics 層上繪製冒泡泡效果
@@ -70,4 +81,13 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+// 3. 關鍵：手機瀏覽器政策規定視訊播放通常需要使用者的第一下點擊
+// 如果畫面是黑的，請在螢幕上點擊任何地方
+function mousePressed() {
+  if (capture && capture.elt) {
+    capture.play();
+    // 此舉能確保在使用者點擊後，視訊流被瀏覽器正式允許播放
+  }
 }
