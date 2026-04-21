@@ -17,8 +17,14 @@ function draw() {
   let vW = width * 0.6;
   let vH = height * 0.6;
   
-  // 計算置中座標並顯示影像
+  push();
+  // 水平翻轉座標系統以修正鏡像問題
+  translate(width, 0);
+  scale(-1, 1);
+  
+  // 在翻轉後的座標系中計算置中座標並繪製影像
   image(capture, (width - vW) / 2, (height - vH) / 2, vW, vH);
+  pop();
 }
 
 function windowResized() {
