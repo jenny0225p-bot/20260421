@@ -17,11 +17,11 @@ function draw() {
   // 畫布背景顏色為 e7c6ff
   background('#e7c6ff');
   
-  // 計算影像寬高為整個畫布寬高的 60%
+  // 1. 計算影像寬高為整個畫布寬高的 60%
   let vW = width * 0.6;
   let vH = height * 0.6;
 
-  // 當攝影機成功取得尺寸後，同步調整 pg 的解析度
+  // 2. 當攝影機成功取得尺寸後，同步調整 pg 的解析度（確保與視訊同比例）
   if (capture.width > 0 && (pg.width !== capture.width || pg.height !== capture.height)) {
     pg = createGraphics(capture.width, capture.height);
   }
@@ -48,14 +48,14 @@ function draw() {
   }
 
   push();
-  // 水平翻轉座標系統以修正鏡像問題
-  translate(width, 0);
+  // 3. 移動到畫布中間並進行水平翻轉（鏡像修正）
+  translate(width / 2, height / 2);
   scale(-1, 1);
+  imageMode(CENTER);
   
-  // 在翻轉後的座標系中計算置中座標並繪製影像
-  image(capture, (width - vW) / 2, (height - vH) / 2, vW, vH);
-  // 將 graphics 層疊加在影像上方
-  image(pg, (width - vW) / 2, (height - vH) / 2, vW, vH);
+  // 4. 繪製攝影機影像與泡泡層
+  image(capture, 0, 0, vW, vH);
+  image(pg, 0, 0, vW, vH);
   pop();
 }
 
